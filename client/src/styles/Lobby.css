@@ -1,0 +1,257 @@
+.lobby-container {
+  min-height: 100vh;
+  background: #000000;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-top: 100px;
+  overflow: hidden;
+}
+
+.lobby-header {
+  padding: 20px 40px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo h1 {
+  color: white;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.lobby-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  gap: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.lobby-spotlight-card {
+  width: 100%;
+  max-width: 480px;
+  animation: slideUp 0.5s ease-out;
+  backdrop-filter: blur(20px);
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+.lobby-spotlight-card .card-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.lobby-spotlight-card .card-header h2 {
+  color: white;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+.lobby-spotlight-card .card-header p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 15px;
+  margin: 0;
+}
+
+/* Use Consolas font only inside the Join Meeting card */
+.lobby-spotlight-card,
+.lobby-spotlight-card .card-header h2,
+.lobby-spotlight-card .card-header p,
+.lobby-spotlight-card label,
+.lobby-spotlight-card .form-group input,
+.lobby-spotlight-card .join-button {
+  font-family: Consolas, "Courier New", monospace;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.card-header h2 {
+  color: #1a1a1a;
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+.card-header p {
+  color: #666;
+  font-size: 15px;
+  margin: 0;
+}
+
+.lobby-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-group label svg {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.form-group input {
+  padding: 14px 16px;
+  border: 2px solid rgba(102, 126, 234, 0.4);
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  backdrop-filter: blur(15px);
+}
+
+.form-group input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #667eea;
+  background: rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.join-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 16px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 6px 24px rgba(102, 126, 234, 0.45), 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  width: 100%;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px) saturate(140%);
+  -webkit-backdrop-filter: blur(6px) saturate(140%);
+}
+
+.join-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 34px rgba(102, 126, 234, 0.6), 0 1px 0 rgba(255, 255, 255, 0.08) inset;
+  filter: brightness(1.04);
+}
+
+.join-button:active {
+  transform: translateY(0px);
+}
+
+.join-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.35), 0 6px 24px rgba(102, 126, 234, 0.45);
+}
+
+.lobby-footer {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+}
+
+.lobby-footer p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  margin: 0;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  max-width: 900px;
+  width: 100%;
+}
+
+.feature-spotlight-card {
+  text-align: center;
+  transition: all 0.3s ease;
+  padding: 1.5rem;
+}
+
+.feature-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.feature-spotlight-card h3 {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+}
+
+.feature-spotlight-card p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .lobby-container {
+    padding-top: 80px;
+  }
+
+  .lobby-spotlight-card {
+    padding: 32px 24px;
+  }
+
+  .lobby-spotlight-card .card-header h2 {
+    font-size: 28px;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+  }
+}
