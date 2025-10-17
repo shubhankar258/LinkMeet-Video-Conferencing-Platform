@@ -1,10 +1,11 @@
-import React, { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useCallback, useState, useRef } from "react";
 import ReactPlayer from "react-player";
 import peer from "../service/peer";
 import { useSocket } from "../context/SocketProvider";
 import StarBorder from "../components/StarBorder";
 import "../styles/Room.css";
 import { MdCallEnd } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
 
 const RoomPage = () => {
   const socket = useSocket();
@@ -13,6 +14,8 @@ const RoomPage = () => {
   const [remoteStream, setRemoteStream] = useState();
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isAudioOn, setIsAudioOn] = useState(true);
+  const [isRemoteVideoOn, setIsRemoteVideoOn] = useState(true);
+  const remoteAudioRef = useRef(null);
 
   const handleUserJoined = useCallback(({ email, id }) => {
     console.log(`Email ${email} joined room`);
@@ -91,6 +94,18 @@ const RoomPage = () => {
     });
   }, []);
 
+  // Bind remote stream to hidden audio element so audio keeps playing even if video is hidden
+  useEffect(() => {
+    if (remoteAudioRef.current && remoteStream) {
+      try {
+        remoteAudioRef.current.srcObject = remoteStream;
+      } catch (e) {
+        // Fallback for older browsers
+        remoteAudioRef.current.src = window.URL.createObjectURL(remoteStream);
+      }
+    }
+  }, [remoteStream]);
+
   useEffect(() => {
     socket.on("user:joined", handleUserJoined);
     socket.on("incomming:call", handleIncommingCall);
@@ -114,11 +129,28 @@ const RoomPage = () => {
     handleNegoNeedFinal,
   ]);
 
+  // Receive remote video toggle changes
+  useEffect(() => {
+    if (!socket) return;
+    const onRemoteVideoToggle = ({ from, isOn }) => {
+      // Only process if it matches our current remote peer
+      if (!remoteSocketId || from === remoteSocketId) {
+        setIsRemoteVideoOn(!!isOn);
+      }
+    };
+    socket.on("peer:video-toggle", onRemoteVideoToggle);
+    return () => socket.off("peer:video-toggle", onRemoteVideoToggle);
+  }, [socket, remoteSocketId]);
+
   const toggleVideo = () => {
     if (myStream) {
       const videoTrack = myStream.getVideoTracks()[0];
       videoTrack.enabled = !videoTrack.enabled;
       setIsVideoOn(videoTrack.enabled);
+      // Inform remote peer so they can show placeholder
+      if (remoteSocketId) {
+        socket.emit("user:video-toggle", { to: remoteSocketId, isOn: videoTrack.enabled });
+      }
     }
   };
 
@@ -166,27 +198,49 @@ const RoomPage = () => {
       <div className="video-grid">
         {remoteStream && (
           <div className="video-container main-video">
-            <ReactPlayer
-              playing
-              height="100%"
-              width="100%"
-              url={remoteStream}
-              className="video-player"
-            />
+            {/* Remote video or placeholder */}
+            {isRemoteVideoOn ? (
+              <ReactPlayer
+                playing
+                height="100%"
+                width="100%"
+                url={remoteStream}
+                className="video-player"
+              />
+            ) : (
+              <div className="video-placeholder">
+                {/* Keep remote audio playing */}
+                <audio ref={remoteAudioRef} autoPlay style={{ display: 'none' }} />
+                <div className="glass-avatar">
+                  <FaUser size={64} />
+                </div>
+                <div className="video-off-badge">Video Off</div>
+              </div>
+            )}
             <div className="video-label">Remote User</div>
           </div>
         )}
 
         {myStream && (
           <div className={`video-container ${remoteStream ? 'pip-video' : 'main-video'}`}>
-            <ReactPlayer
-              playing
-              muted
-              height="100%"
-              width="100%"
-              url={myStream}
-              className="video-player"
-            />
+            {/* Local video or placeholder */}
+            {isVideoOn ? (
+              <ReactPlayer
+                playing
+                muted
+                height="100%"
+                width="100%"
+                url={myStream}
+                className="video-player"
+              />
+            ) : (
+              <div className="video-placeholder">
+                <div className="glass-avatar self">
+                  <FaUser size={56} />
+                </div>
+                <div className="video-off-badge">Your Video is Off</div>
+              </div>
+            )}
             <div className="video-label">You {!isVideoOn && '(Video Off)'}</div>
           </div>
         )}

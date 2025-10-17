@@ -35,4 +35,9 @@ io.on("connection", (socket) => {
     console.log("peer:nego:done", ans);
     io.to(to).emit("peer:nego:final", { from: socket.id, ans });
   });
+
+  // Forward video toggle state so peers can render placeholders when video is off
+  socket.on("user:video-toggle", ({ to, isOn }) => {
+    io.to(to).emit("peer:video-toggle", { from: socket.id, isOn });
+  });
 });
